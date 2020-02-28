@@ -1,4 +1,4 @@
-package br.com.goldenraspberry.model;
+package br.com.goldenraspberry.application.model;
 
 public interface DTO {
 	

@@ -1,6 +1,4 @@
-package br.com.goldenraspberry.model;
-
-import java.util.List;
+package br.com.goldenraspberry.application.model;
 
 public class Movie implements DTO {
 	
@@ -9,10 +7,6 @@ public class Movie implements DTO {
 	private int year;
 	
 	private String title;
-	
-	private List<Studio> studios;
-	
-	private List<Producer> producers;
 	
 	private boolean winner;
 
@@ -39,22 +33,6 @@ public class Movie implements DTO {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public List<Studio> getStudios() {
-		return studios;
-	}
-
-	public void setStudios(List<Studio> studios) {
-		this.studios = studios;
-	}
-
-	public List<Producer> getProducers() {
-		return producers;
-	}
-
-	public void setProducers(List<Producer> producers) {
-		this.producers = producers;
 	}
 
 	public boolean isWinner() {

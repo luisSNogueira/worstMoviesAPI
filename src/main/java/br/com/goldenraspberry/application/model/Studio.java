@@ -1,6 +1,6 @@
-package br.com.goldenraspberry.model;
+package br.com.goldenraspberry.application.model;
 
-public class Producer implements DTO {
+public class Studio implements DTO {
 	
 	private Long id;
 	
