@@ -1,14 +1,20 @@
 package br.com.goldenraspberry.application.model;
 
+import java.util.List;
+
 public class Movie implements DTO {
 	
 	private Long id;
 	
-	private int year;
+	private String year;
 	
 	private String title;
 	
 	private boolean winner;
+	
+	private List<ProducerToMovie> producers;
+	
+	private List<StudioToMovie> studios;
 
 	@Override
 	public Long getId() {
@@ -19,11 +25,11 @@ public class Movie implements DTO {
 		this.id = id;
 	}
 
-	public int getYear() {
+	public String getYear() {
 		return year;
 	}
 
-	public void setYear(int year) {
+	public void setYear(String year) {
 		this.year = year;
 	}
 
@@ -41,6 +47,22 @@ public class Movie implements DTO {
 
 	public void setWinner(boolean winner) {
 		this.winner = winner;
+	}
+
+	public List<ProducerToMovie> getProducers() {
+		return producers;
+	}
+
+	public void setProducers(List<ProducerToMovie> producers) {
+		this.producers = producers;
+	}
+
+	public List<StudioToMovie> getStudios() {
+		return studios;
+	}
+
+	public void setStudios(List<StudioToMovie> studios) {
+		this.studios = studios;
 	}
 
 }

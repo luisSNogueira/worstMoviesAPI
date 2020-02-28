@@ -1,10 +1,14 @@
 package br.com.goldenraspberry.application.model;
 
+import java.util.List;
+
 public class Producer implements DTO {
 	
 	private Long id;
 	
 	private String name;
+	
+	private List<ProducerToMovie> movies;
 
 	@Override
 	public Long getId() {
@@ -21,6 +25,14 @@ public class Producer implements DTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<ProducerToMovie> getMovies() {
+		return movies;
+	}
+
+	public void setMovies(List<ProducerToMovie> movies) {
+		this.movies = movies;
 	}
 
 }
