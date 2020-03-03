@@ -12,9 +12,9 @@ public class Movie implements DTO {
 	
 	private boolean winner;
 	
-	private List<ProducerToMovie> producers;
+	private List<String> producers;
 	
-	private List<StudioToMovie> studios;
+	private List<String> studios;
 
 	@Override
 	public Long getId() {
@@ -49,19 +49,19 @@ public class Movie implements DTO {
 		this.winner = winner;
 	}
 
-	public List<ProducerToMovie> getProducers() {
+	public List<String> getProducers() {
 		return producers;
 	}
 
-	public void setProducers(List<ProducerToMovie> producers) {
+	public void setProducers(List<String> producers) {
 		this.producers = producers;
 	}
 
-	public List<StudioToMovie> getStudios() {
+	public List<String> getStudios() {
 		return studios;
 	}
 
-	public void setStudios(List<StudioToMovie> studios) {
+	public void setStudios(List<String> studios) {
 		this.studios = studios;
 	}
 

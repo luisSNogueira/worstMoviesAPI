@@ -10,23 +10,21 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import br.com.goldenraspberry.application.model.DTO;
-import br.com.goldenraspberry.application.model.Movie;
+import br.com.goldenraspberry.application.model.Producer;
 
 @Repository
-public class MovieDAO implements DAO {
+public class ProducerDAO implements DAO {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public Long insert(DTO dto) throws Exception {
-		Movie movie = (Movie)dto;
+		Producer producer = (Producer)dto;
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
-			PreparedStatement ps = connection.prepareStatement("insert into movie (year, title, winner) values(?, ?, ?)");
-			ps.setString(1, movie.getYear());
-			ps.setString(2, movie.getTitle());
-			ps.setBoolean(3, movie.isWinner());
+			PreparedStatement ps = connection.prepareStatement("insert into producer (name) values(?)");
+			ps.setString(1, producer.getName());
 			return ps;
 		}, keyHolder);
 		return (Long) keyHolder.getKey();
@@ -36,13 +34,13 @@ public class MovieDAO implements DAO {
 	public DTO getById(Long id) throws Exception {
 		return (DTO)jdbcTemplate.queryForObject("select * from movie where id=?", new Object[] {
 				id
-		}, new BeanPropertyRowMapper<Movie>(Movie.class));
+		}, new BeanPropertyRowMapper<Producer>(Producer.class));
 	}
 	
-	public int delete(Long id) throws Exception {
-		return jdbcTemplate.update("delete from movie where id=?", new Object[] {
-			id	
-		});
+	public DTO getByName(String name) throws Exception {
+		return (DTO)jdbcTemplate.queryForObject("select * from movie where name=?", new Object[] {
+				name
+		}, new BeanPropertyRowMapper<Producer>(Producer.class));
 	}
 
 }
