@@ -9,7 +9,15 @@ public class Studio implements DTO {
 	private String name;
 	
 	private List<StudioToMovie> movies;
-
+	
+	public Studio() {
+		
+	}
+	
+	public Studio(String name) {
+		this.name = name;
+	}
+ 
 	@Override
 	public Long getId() {
 		return this.id;

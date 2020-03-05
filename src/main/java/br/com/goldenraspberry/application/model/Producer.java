@@ -9,6 +9,14 @@ public class Producer implements DTO {
 	private String name;
 	
 	private List<ProducerToMovie> movies;
+	
+	public Producer() {
+		
+	}
+	
+	public Producer(String name) {
+		this.name = name;
+	}
 
 	@Override
 	public Long getId() {
