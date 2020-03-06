@@ -38,7 +38,7 @@ public class ProducerDAO implements DAO {
 	}
 	
 	public DTO getByName(String name) throws Exception {
-		return (DTO)jdbcTemplate.queryForObject("select * from movie where name=?", new Object[] {
+		return (DTO)jdbcTemplate.query("select * from movie where name=?", new Object[] {
 				name
 		}, new BeanPropertyRowMapper<Producer>(Producer.class));
 	}

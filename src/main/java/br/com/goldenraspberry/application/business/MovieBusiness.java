@@ -9,10 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.goldenraspberry.application.DAO.MovieDAO;
 import br.com.goldenraspberry.application.DAO.ProducerDAO;
+import br.com.goldenraspberry.application.DAO.ProducerToMovieDAO;
 import br.com.goldenraspberry.application.DAO.StudioDAO;
+import br.com.goldenraspberry.application.DAO.StudioToMovieDAO;
 import br.com.goldenraspberry.application.model.Movie;
 import br.com.goldenraspberry.application.model.Producer;
+import br.com.goldenraspberry.application.model.ProducerToMovie;
 import br.com.goldenraspberry.application.model.Studio;
+import br.com.goldenraspberry.application.model.StudioToMovie;
 
 @Service
 @Transactional
@@ -26,6 +30,12 @@ public class MovieBusiness {
 	
 	@Autowired
 	private ProducerDAO producerDAO;
+	
+	@Autowired
+	private StudioToMovieDAO studioToMovieDAO;
+	
+	@Autowired
+	private ProducerToMovieDAO producerToMovieDAO;
 	
 	List<String> erros;
 	
@@ -52,6 +62,8 @@ public class MovieBusiness {
 	public Movie insertMovie(Movie movie) throws Exception {
 		erros = new ArrayList<String>();
 		if(validateMovieData(movie)) {
+			Long movieID = movieDAO.insert(movie);
+			movie.setId(movieID);
 			for(String studioName : movie.getStudios()) {
 				Studio studio = getStudioByName(studioName);
 				if(studio == null) {
@@ -59,6 +71,7 @@ public class MovieBusiness {
 					Long studioId = studioDAO.insert(studio);
 					studio.setId(studioId);
 				}
+				studioToMovieDAO.insert(new StudioToMovie(movie.getId(), studio.getId()));
 			}
 			for(String producerName : movie.getProducers()) {
 				Producer producer = getProducerByName(producerName);
@@ -67,10 +80,8 @@ public class MovieBusiness {
 					Long producerId = producerDAO.insert(producer);
 					producer.setId(producerId);
 				}
+				producerToMovieDAO.insert(new ProducerToMovie(movie.getId(), producer.getId()));
 			}
-			Long movieID = movieDAO.insert(movie);
-			movie.setId(movieID);
-			
 		} else {
 			String msgErro = "Os seguintes erros ocorreram na validação dos dados: ";
 			StringBuffer sb = new StringBuffer(msgErro);

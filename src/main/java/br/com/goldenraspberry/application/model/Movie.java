@@ -15,6 +15,16 @@ public class Movie implements DTO {
 	private List<String> producers;
 	
 	private List<String> studios;
+	
+	public Movie() {
+
+	}
+	
+	public Movie(String year, String title, boolean winner) {
+		this.year = year;
+		this.title = title;
+		this.winner = winner;
+	}
 
 	@Override
 	public Long getId() {

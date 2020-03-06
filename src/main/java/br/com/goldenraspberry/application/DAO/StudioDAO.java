@@ -1,10 +1,14 @@
 package br.com.goldenraspberry.application.DAO;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -29,18 +33,25 @@ public class StudioDAO implements DAO {
 		}, keyHolder);
 		return (Long) keyHolder.getKey();
 	}
-	
-	public DTO getByName(String name) throws Exception {
-		return (DTO)jdbcTemplate.queryForObject("select * from studio where name=?", new Object[] {
-				name
-		}, new BeanPropertyRowMapper<Studio>(Studio.class));
-	}
 
 	@Override
 	public DTO getById(Long id) throws Exception {
-		return (DTO)jdbcTemplate.queryForObject("select * from studio where id=?", new Object[] {
+		return (DTO)jdbcTemplate.query("select * from studio where id=?", new Object[] {
 				id
 		}, new BeanPropertyRowMapper<Studio>(Studio.class));
+	}
+	
+	public DTO getByName(String name) throws Exception {
+		return jdbcTemplate.query("select * from studio where name=?", new Object[] {
+			name	
+		}, new ResultSetExtractor<Studio>() {
+
+			@Override
+			public Studio extractData(ResultSet rs) throws SQLException, DataAccessException {
+				return rs.next() ? new Studio(rs.getString("NAME")) : null;
+			}
+			
+		});
 	}
 
 }

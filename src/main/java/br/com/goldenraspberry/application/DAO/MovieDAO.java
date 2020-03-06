@@ -1,6 +1,7 @@
 package br.com.goldenraspberry.application.DAO;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -23,7 +24,7 @@ public class MovieDAO implements DAO {
 		Movie movie = (Movie)dto;
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
-			PreparedStatement ps = connection.prepareStatement("insert into movie (year, title, winner) values(?, ?, ?)");
+			PreparedStatement ps = connection.prepareStatement("insert into movie (year, title, winner) values(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, movie.getYear());
 			ps.setString(2, movie.getTitle());
 			ps.setBoolean(3, movie.isWinner());
