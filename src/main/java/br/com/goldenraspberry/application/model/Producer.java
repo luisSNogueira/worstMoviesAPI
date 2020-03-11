@@ -17,6 +17,11 @@ public class Producer implements DTO {
 	public Producer(String name) {
 		this.name = name;
 	}
+	
+	public Producer(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 
 	@Override
 	public Long getId() {

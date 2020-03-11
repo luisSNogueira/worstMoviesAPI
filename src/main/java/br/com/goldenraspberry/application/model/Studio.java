@@ -17,6 +17,11 @@ public class Studio implements DTO {
 	public Studio(String name) {
 		this.name = name;
 	}
+	
+	public Studio(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
  
 	@Override
 	public Long getId() {

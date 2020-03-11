@@ -3,6 +3,7 @@ package br.com.goldenraspberry.application.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +28,7 @@ public class StudioDAO implements DAO {
 		Studio studio = (Studio)dto;
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
-			PreparedStatement ps = connection.prepareStatement("insert into studio (name) values(?)");
+			PreparedStatement ps = connection.prepareStatement("insert into studio (name) values(?)", Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, studio.getName());
 			return ps;
 		}, keyHolder);
@@ -48,7 +49,7 @@ public class StudioDAO implements DAO {
 
 			@Override
 			public Studio extractData(ResultSet rs) throws SQLException, DataAccessException {
-				return rs.next() ? new Studio(rs.getString("NAME")) : null;
+				return rs.next() ? new Studio(rs.getLong("ID"), rs.getString("NAME")) : null;
 			}
 			
 		});

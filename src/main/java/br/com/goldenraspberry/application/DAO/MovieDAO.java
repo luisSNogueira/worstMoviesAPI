@@ -1,11 +1,14 @@
 package br.com.goldenraspberry.application.DAO;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -35,9 +38,16 @@ public class MovieDAO implements DAO {
 
 	@Override
 	public DTO getById(Long id) throws Exception {
-		return (DTO)jdbcTemplate.queryForObject("select * from movie where id=?", new Object[] {
-				id
-		}, new BeanPropertyRowMapper<Movie>(Movie.class));
+		return jdbcTemplate.query("select * from movie where id=?", new Object[] {
+			id	
+		}, new ResultSetExtractor<Movie>() {
+
+			@Override
+			public Movie extractData(ResultSet rs) throws SQLException, DataAccessException {
+				return rs.next() ? new Movie(rs.getString("YEAR"), rs.getString("TITLE"), rs.getBoolean("WINNER")) : null;
+			}
+			
+		});
 	}
 	
 	public int delete(Long id) throws Exception {
