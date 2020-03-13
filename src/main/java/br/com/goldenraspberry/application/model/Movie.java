@@ -12,12 +12,19 @@ public class Movie implements DTO {
 	
 	private boolean winner;
 	
-	private List<String> producers;
+	private List<Producer> producers;
 	
-	private List<String> studios;
+	private List<Studio> studios;
 	
 	public Movie() {
 
+	}
+	
+	public Movie(Long id, String year, String title, boolean winner) {
+		this.id = id;
+		this.year = year;
+		this.title = title;
+		this.winner = winner;
 	}
 	
 	public Movie(String year, String title, boolean winner) {
@@ -59,19 +66,19 @@ public class Movie implements DTO {
 		this.winner = winner;
 	}
 
-	public List<String> getProducers() {
+	public List<Producer> getProducers() {
 		return producers;
 	}
 
-	public void setProducers(List<String> producers) {
+	public void setProducers(List<Producer> producers) {
 		this.producers = producers;
 	}
 
-	public List<String> getStudios() {
+	public List<Studio> getStudios() {
 		return studios;
 	}
 
-	public void setStudios(List<String> studios) {
+	public void setStudios(List<Studio> studios) {
 		this.studios = studios;
 	}
 

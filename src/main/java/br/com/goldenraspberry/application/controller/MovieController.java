@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.goldenraspberry.application.business.MovieBusiness;
-import br.com.goldenraspberry.application.model.Movie;
+import br.com.goldenraspberry.application.request.MovieJsonRequest;
+import br.com.goldenraspberry.application.request.MovieJsonResponse;
 
 @RestController
 public class MovieController {
@@ -19,10 +20,10 @@ public class MovieController {
 	private MovieBusiness movieBusiness;
 	
 	@PostMapping(value = "/movie")
-	public ResponseEntity<?> insertMovie(@RequestBody Movie movie) {
+	public ResponseEntity<?> insertMovie(@RequestBody MovieJsonRequest movieJsonRequest) {
 		try {
-			Movie result = movieBusiness.insertMovie(movie);
-			return new ResponseEntity<Movie>(result, HttpStatus.CREATED);
+			MovieJsonResponse result = movieBusiness.insertMovie(movieJsonRequest);
+			return new ResponseEntity<MovieJsonResponse>(result, HttpStatus.CREATED);
 		}catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
@@ -31,7 +32,7 @@ public class MovieController {
 	@DeleteMapping(value = "/movie/{id}")
 	public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
 		try {
-			Movie result = movieBusiness.deleteMovie(id);
+			MovieJsonResponse result = movieBusiness.deleteMovie(id);
 			return ResponseEntity.ok().body(result);
 		}catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

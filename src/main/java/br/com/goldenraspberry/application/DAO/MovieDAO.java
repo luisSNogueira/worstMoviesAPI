@@ -44,7 +44,7 @@ public class MovieDAO implements DAO {
 
 			@Override
 			public Movie extractData(ResultSet rs) throws SQLException, DataAccessException {
-				return rs.next() ? new Movie(rs.getString("YEAR"), rs.getString("TITLE"), rs.getBoolean("WINNER")) : null;
+				return rs.next() ? new Movie(rs.getLong("ID"), rs.getString("YEAR"), rs.getString("TITLE"), rs.getBoolean("WINNER")) : null;
 			}
 			
 		});

@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import br.com.goldenraspberry.application.business.MovieBusiness;
-import br.com.goldenraspberry.application.model.Movie;
+import br.com.goldenraspberry.application.request.MovieJsonRequest;
 
 @Component
 public class DataLoad {
@@ -37,14 +37,14 @@ public class DataLoad {
 		persistInputData();
 	}
 	
-	private List<Movie> readCSVFile() {
-		List<Movie> movies = new ArrayList<Movie>();
+	private List<MovieJsonRequest> readCSVFile() {
+		List<MovieJsonRequest> movies = new ArrayList<MovieJsonRequest>();
 		try {
 			Reader in = new FileReader(CSV_FILE_PATH);
 			CSVFormat csvFormat = CSVFormat.newFormat(';');
 			Iterable<CSVRecord> records = csvFormat.withFirstRecordAsHeader().parse(in);
 			for(CSVRecord record : records) {
-				Movie movie = new Movie();
+				MovieJsonRequest movie = new MovieJsonRequest();
 				movie.setYear(record.get("year"));
 				movie.setTitle(record.get("title"));
 				movie.setStudios(parseMultipleEntries(record.get("studios")));
@@ -64,9 +64,9 @@ public class DataLoad {
 	}
 
 	private void persistInputData() {
-		List<Movie> movies = readCSVFile();
+		List<MovieJsonRequest> movies = readCSVFile();
 		try {
-			for(Movie movie : movies) {
+			for(MovieJsonRequest movie : movies) {
 				movieBusiness.insertMovie(movie);
 			}
 		} catch (Exception e) {

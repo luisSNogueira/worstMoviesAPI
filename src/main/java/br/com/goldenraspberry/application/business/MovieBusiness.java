@@ -17,6 +17,8 @@ import br.com.goldenraspberry.application.model.Producer;
 import br.com.goldenraspberry.application.model.ProducerToMovie;
 import br.com.goldenraspberry.application.model.Studio;
 import br.com.goldenraspberry.application.model.StudioToMovie;
+import br.com.goldenraspberry.application.request.MovieJsonRequest;
+import br.com.goldenraspberry.application.request.MovieJsonResponse;
 
 @Service
 @Transactional
@@ -39,17 +41,17 @@ public class MovieBusiness {
 	
 	List<String> erros;
 	
-	private boolean validateMovieData(Movie movie) {
-		if(movie.getTitle() == null || movie.getTitle().equals("")) {
+	private boolean validateMovieData(MovieJsonRequest movieJsonRequest) {
+		if(movieJsonRequest.getTitle() == null || movieJsonRequest.getTitle().equals("")) {
 			erros.add("o campo title não pode ser nulo.");
 		}
-		if(movie.getYear() == null || movie.getYear().equals("")) {
+		if(movieJsonRequest.getYear() == null || movieJsonRequest.getYear().equals("")) {
 			erros.add("o campo year não pode ser nulo.");
 		}
-		if(movie.getStudios().isEmpty() || movie.getStudios().get(0).equals("")) {
+		if(movieJsonRequest.getStudios().isEmpty() || movieJsonRequest.getStudios().get(0).equals("")) {
 			erros.add("o campo studios deve conter ao menos um registro.");
 		}
-		if(movie.getProducers().isEmpty() || movie.getProducers().get(0).equals("")) {
+		if(movieJsonRequest.getProducers().isEmpty() || movieJsonRequest.getProducers().get(0).equals("")) {
 			erros.add("o campo producers deve conter ao menos um registro.");
 		}
 		if(erros.size() > 0) {
@@ -59,12 +61,13 @@ public class MovieBusiness {
 		}
 	}
 	
-	public Movie insertMovie(Movie movie) throws Exception {
+	public MovieJsonResponse insertMovie(MovieJsonRequest movieJsonRequest) throws Exception {
 		erros = new ArrayList<String>();
-		if(validateMovieData(movie)) {
-			Long movieID = movieDAO.insert(movie);
-			movie.setId(movieID);
-			for(String studioName : movie.getStudios()) {
+		MovieJsonResponse movieJsonResponse = null;
+		if(validateMovieData(movieJsonRequest)) {
+			Movie movie = new Movie(movieJsonRequest.getYear(), movieJsonRequest.getTitle(), movieJsonRequest.isWinner());
+			movie.setId(movieDAO.insert(movie));
+			for(String studioName : movieJsonRequest.getStudios()) {
 				Studio studio = getStudioByName(studioName);
 				if(studio == null) {
 					studio = new Studio(studioName);
@@ -73,7 +76,7 @@ public class MovieBusiness {
 				}
 				studioToMovieDAO.insert(new StudioToMovie(movie.getId(), studio.getId()));
 			}
-			for(String producerName : movie.getProducers()) {
+			for(String producerName : movieJsonRequest.getProducers()) {
 				Producer producer = getProducerByName(producerName);
 				if(producer == null) {
 					producer = new Producer(producerName);
@@ -82,6 +85,7 @@ public class MovieBusiness {
 				}
 				producerToMovieDAO.insert(new ProducerToMovie(movie.getId(), producer.getId()));
 			}
+			movieJsonResponse = createMovieJsonResponse(movie);
 		} else {
 			String msgErro = "Os seguintes erros ocorreram na validação dos dados: ";
 			StringBuffer sb = new StringBuffer(msgErro);
@@ -89,16 +93,18 @@ public class MovieBusiness {
 			msgErro = sb.toString();
 			throw new Exception(msgErro);
 		}
-		return movie;
+		return movieJsonResponse;
 	}
 	
-	public Movie deleteMovie(Long id) throws Exception {
-		Movie movie = (Movie)movieDAO.getById(id);
+	public MovieJsonResponse deleteMovie(Long id) throws Exception {
+		Movie movie = getMovieById(id);
 		if(movie == null) {
 			throw new Exception("Não foi encontrado registro com o id informado.");
 		}
+		studioToMovieDAO.delete(id);
+		producerToMovieDAO.delete(id);
 		movieDAO.delete(id);
-		return movie;
+		return createMovieJsonResponse(movie);
 	}
 	
 	private Studio getStudioByName(String name) throws Exception {
@@ -107,6 +113,25 @@ public class MovieBusiness {
 	
 	private Producer getProducerByName(String name) throws Exception {
 		return (Producer)producerDAO.getByName(name);
+	}
+	
+	private Movie getMovieById(Long id) throws Exception {
+		Movie movie = (Movie)movieDAO.getById(id);
+		movie.setStudios(studioToMovieDAO.getStudiosByMovieId(movie.getId()));
+		movie.setProducers(producerToMovieDAO.getProducersByMovieId(movie.getId()));
+		return movie;
+	}
+	
+	private MovieJsonResponse createMovieJsonResponse(Movie movie) {
+		MovieJsonResponse response = new MovieJsonResponse();
+		response.setYear(movie.getYear());
+		response.setTitle(movie.getTitle());
+		response.setWinner(movie.isWinner());
+		List<String> studios = new ArrayList<String>();
+		movie.getStudios().forEach(studio -> studios.add(studio.getName()));
+		List<String> producers = new ArrayList<String>();
+		movie.getProducers().forEach(producer -> producers.add(producer.getName()));
+		return response;
 	}
 
 }
